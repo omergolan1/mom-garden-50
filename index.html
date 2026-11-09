@@ -113,6 +113,15 @@ body.at-intro .stick { display: none; }
 
 .finale { position: fixed; z-index: 4; top: 22%; left: 0; right: 0; text-align: center; pointer-events: none; font-family: var(--display); font-weight: 700; font-size: clamp(44px, 7vw, 110px); line-height: .95; color: #fff; text-shadow: 0 3px 0 rgba(0,0,0,.18); opacity: 0; transform: scale(.9); transition: opacity .6s ease, transform .9s var(--ease-bloom); }
 .finale.show { opacity: 1; transform: none; }
+.love { position: fixed; z-index: 4; left: 0; right: 0; top: 16%; text-align: center; pointer-events: none; display: grid; justify-items: center; gap: 2px;
+  font-family: var(--display); font-weight: 700; line-height: .9; color: #fff; text-shadow: 0 3px 0 rgba(23,51,39,.35), 0 0 28px rgba(232,85,58,.35);
+  opacity: 0; transform: translateY(20px) scale(.85); transition: opacity .5s ease, transform .9s var(--ease-bloom); }
+.love span { font-size: clamp(46px, 8vw, 120px); -webkit-text-stroke: 6px #173327; paint-order: stroke fill; }
+.love b { font-size: clamp(60px, 11vw, 168px); color: #FFC93C; -webkit-text-stroke: 8px #B23A26; paint-order: stroke fill; }
+.love.show { opacity: 1; transform: none; }
+.love.show span, .love.show b { animation: lovebeat 1.6s ease-in-out .9s infinite; display: inline-block; }
+@keyframes lovebeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@media (prefers-reduced-motion: reduce) { .love, .love.show { transition: opacity .3s ease; transform: none; } .love.show span, .love.show b { animation: none; } }
 .finale span { color: var(--saffron); }
 .nogl { position: fixed; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; font-size: 20px; background: #86CFE3; z-index: 9; }
 
@@ -269,6 +278,7 @@ body.at-intro .stick { display: none; }
 <div class="stick" id="stick" aria-hidden="true"><i></i></div>
 <div class="hint gone" id="hint">גררי כדי להסתכל, וגעי בצמח כדי לפתוח</div>
 <div class="finale" id="finale" aria-live="polite"></div>
+<div class="love" id="love" aria-live="polite"><span>אוהבים אותך</span><b>הכי בעולם</b></div>
 
 <div class="intro" id="intro">
   <div class="card">
@@ -1193,11 +1203,12 @@ body.at-intro .stick { display: none; }
 
   // fireworks
   var fwTex = canvasTex(radial(64, 'rgba(255,255,255,1)', 'rgba(255,255,255,0)'));
+  var fwSolid = (function () { var c = document.createElement('canvas'); c.width = c.height = 32; var x = c.getContext('2d'); x.fillStyle = '#fff'; x.beginPath(); x.moveTo(16, 2); for (var k = 1; k < 10; k++) { var a = k / 10 * Math.PI * 2 - Math.PI / 2, r = k % 2 ? 6 : 14; x.lineTo(16 + Math.cos(a) * r, 16 + Math.sin(a) * r); } x.fill(); return canvasTex(c); })();
   function firework(x, y, z) {
     var n = 90, pos = new Float32Array(n * 3), vel = [], col = new THREE.Color(PARTY[Math.floor(R() * 8)]);
     for (var k = 0; k < n; k++) { pos[k * 3] = x; pos[k * 3 + 1] = y; pos[k * 3 + 2] = z; var th = R() * Math.PI * 2, ph = Math.acos(2 * R() - 1), s = 7 + R() * 3; vel.push(Math.sin(ph) * Math.cos(th) * s, Math.cos(ph) * s, Math.sin(ph) * Math.sin(th) * s); }
     var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    var m = new THREE.Points(g, new THREE.PointsMaterial({ size: .9, color: col, map: fwTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+    var dayFw = night < .5, m = new THREE.Points(g, new THREE.PointsMaterial({ size: dayFw ? 2.2 : .9, color: col, map: dayFw ? fwSolid : fwTex, transparent: true, alphaTest: dayFw ? .3 : 0, depthWrite: false, blending: dayFw ? THREE.NormalBlending : THREE.AdditiveBlending, fog: false }));
     scene.add(m); deco.fw.push({ m: m, vel: vel, life: 0 });
     if (soundOn && ac) { note(Math.floor(R() * 8), .05); }
   }
@@ -1958,7 +1969,7 @@ body.at-intro .stick { display: none; }
   });
 
   /* ================= near-plant chip ================= */
-  var near = document.getElementById('near'), nearIdx = -1;
+  var near = document.getElementById('near'), nearIdx = -1, loveEl = document.getElementById('love');
   document.getElementById('nearopen').addEventListener('click', function () { if (nearIdx > -1) openPlant(nearIdx); });
   function updateNear() {
     var best = -1, bd = 10.5, fx = -Math.sin(cam.yaw), fz = -Math.cos(cam.yaw);
@@ -2189,6 +2200,14 @@ body.at-intro .stick { display: none; }
       for (var r = rings.length - 1; r >= 0; r--) {
         var rg = rings[r]; rg.life += dt; var s2 = 1 + rg.life * 7; rg.m.scale.set(s2, s2, s2); rg.m.material.opacity = Math.max(0, 1 - rg.life / .8);
         if (rg.life > .8) { scene.remove(rg.m); rg.m.geometry.dispose(); rg.m.material.dispose(); rings.splice(r, 1); }
+      }
+      if (mode === 'walk') {
+        var d50 = Math.hypot(cam.x - fifty.position.x, cam.z - fifty.position.z);
+        if (!deco.atFifty && d50 < 12) {
+          deco.atFifty = true; deco.lastLoveFw = 0; loveEl.classList.add('show');
+          chord(3); setTimeout(function () { chord(7); }, 300); setTimeout(function () { chord(10); }, 600);
+        } else if (deco.atFifty && d50 > 17) { deco.atFifty = false; loveEl.classList.remove('show'); }
+        if (deco.atFifty && !reduce && now - deco.lastLoveFw > 520) { deco.lastLoveFw = now; firework(fifty.position.x + (R() < .5 ? -1 : 1) * (3 + R() * 9), 7 + R() * 7, fifty.position.z - 1 - R() * 6); }
       }
       if (mode === 'walk') updateNear();
       renderer.render(scene, camera);
