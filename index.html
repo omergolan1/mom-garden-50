@@ -119,6 +119,41 @@ body.at-intro .stick { display: none; }
 .love span { font-size: clamp(46px, 8vw, 120px); -webkit-text-stroke: 6px #173327; paint-order: stroke fill; }
 .love b { font-size: clamp(60px, 11vw, 168px); color: #FFC93C; -webkit-text-stroke: 8px #B23A26; paint-order: stroke fill; }
 .love.show { opacity: 1; transform: none; }
+.giftbtn { position: fixed; z-index: 6; left: 50%; top: 42%; transform: translate(-50%, 10px) scale(.9); opacity: 0; pointer-events: none;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 10px 24px; border-radius: 999px; background: #fff; color: #173327;
+  font-family: var(--display); font-weight: 700; font-size: 26px; box-shadow: 0 16px 34px -14px rgba(0,0,0,.55); transition: opacity .3s ease, transform .45s var(--ease-bloom); }
+.giftbtn.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; animation: giftnudge 2.2s ease-in-out .6s infinite; }
+.giftbtn:active { transform: translate(-50%, 0) scale(.96); }
+.giftbtn svg { width: 30px; height: 30px; }
+@keyframes giftnudge { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+.tickets { border: 0; padding: clamp(22px, 4vw, 44px) clamp(16px, 4vw, 44px) clamp(24px, 4vw, 40px); width: min(920px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; border-radius: 18px;
+  background: #23113A; background: linear-gradient(160deg, #2A1446, #4A1A4F 55%, #7A2346); color: #fff; text-align: center;
+  opacity: 0; transform: translateY(30px) scale(.95); transition: opacity .3s ease, transform .5s var(--ease-bloom); }
+.tickets.is-in { opacity: 1; transform: none; }
+.tickets::backdrop { background: rgba(10, 6, 20, .7); }
+.tickets h2 { margin: 0 0 18px; font-family: var(--display); font-size: clamp(44px, 6vw, 76px); line-height: .95; color: #FFD447; }
+.tk-pair { display: flex; gap: clamp(12px, 3vw, 28px); justify-content: center; flex-wrap: wrap; }
+.ticket { position: relative; display: grid; grid-template-columns: 1fr 1fr; width: min(410px, 100%); background: #FFF6E6; color: #2A1446; border-radius: 14px; overflow: hidden; text-align: right;
+  transform: rotate(var(--r)); box-shadow: 0 18px 30px -16px rgba(0,0,0,.6); animation: tkin .7s var(--ease-bloom) both; }
+.ticket + .ticket { animation-delay: .15s; }
+@keyframes tkin { from { opacity: 0; transform: translateY(40px) rotate(calc(var(--r) * 4)) scale(.9); } to { opacity: 1; transform: rotate(var(--r)); } }
+.ticket::before, .ticket::after { content: ""; position: absolute; left: 50%; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; background: #3A1748; }
+.ticket::before { top: -11px; } .ticket::after { bottom: -11px; }
+.tk-art { min-height: 200px; border-inline-end: 3px dashed rgba(42,20,70,.35); }
+.tk-art svg { display: block; width: 100%; height: 100%; }
+.tk-info { padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 6px; }
+.tk-kind { font-size: 13px; letter-spacing: .08em; color: #B23A6A; }
+.tk-info b { font-family: var(--display); font-size: 30px; line-height: .95; }
+.tk-info dl { margin: 6px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 15px; }
+.tk-info dt { color: #7A5A8A; } .tk-info dd { margin: 0; font-weight: 700; font-size: 19px; font-variant-numeric: tabular-nums; direction: ltr; text-align: right; }
+.tk-num { margin-top: auto; font-size: 12px; color: #7A5A8A; }
+.tk-from { margin: 26px auto 0; max-width: 24ch; font-family: var(--hand); font-size: clamp(26px, 3.4vw, 38px); line-height: 1.25; color: #FFF1D6; }
+.tk-heart { width: .75em; height: .7em; vertical-align: -.05em; margin-inline-start: .15em; }
+.tk-close { position: absolute; top: 12px; left: 12px; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.14); color: #fff; }
+.tk-close:hover { background: rgba(255,255,255,.24); }
+.tk-close svg { width: 20px; height: 20px; }
+@media (max-width: 520px) { .ticket { grid-template-columns: 1fr; } .tk-art { min-height: 170px; border-inline-end: 0; border-bottom: 3px dashed rgba(42,20,70,.35); } .ticket::before, .ticket::after { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ticket { animation: none; } .giftbtn.show { animation: none; } .tickets { transition: opacity .2s ease; transform: none; } }
 .love.show span, .love.show b { animation: lovebeat 1.6s ease-in-out .9s infinite; display: inline-block; }
 @keyframes lovebeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 @media (prefers-reduced-motion: reduce) { .love, .love.show { transition: opacity .3s ease; transform: none; } .love.show span, .love.show b { animation: none; } }
@@ -278,6 +313,7 @@ body.at-intro .stick { display: none; }
 <div class="stick" id="stick" aria-hidden="true"><i></i></div>
 <div class="hint gone" id="hint">גררי כדי להסתכל, וגעי בצמח כדי לפתוח</div>
 <div class="finale" id="finale" aria-live="polite"></div>
+<button class="giftbtn" id="giftbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="1.5" fill="#E8455A"/><rect x="2" y="6" width="20" height="4" rx="1" fill="#E8455A"/><rect x="11" y="6" width="2.4" height="15" fill="#FFD447"/><path d="M12 6 C 9 1, 5 3, 7 6Z M12 6 C 15 1, 19 3, 17 6Z" fill="#FFD447"/></svg><span>לפתוח את המתנה</span></button>
 <div class="love" id="love" aria-live="polite"><span>אוהבים אותך</span><b>הכי בעולם</b></div>
 
 <div class="intro" id="intro">
@@ -294,6 +330,15 @@ body.at-intro .stick { display: none; }
   </div>
 </div>
 
+<dialog class="tickets" id="tickets" aria-labelledby="tk-title">
+  <button class="tk-close" id="tk-close" type="button" aria-label="סגירה"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  <h2 id="tk-title">מתנה בשבילך</h2>
+  <div class="tk-pair">
+    <article class="ticket" style="--r:-3deg"><div class="tk-art" data-art></div><div class="tk-info"><span class="tk-kind">מחזמר</span><b>פריסילה<br>מלכת המדבר</b><dl><dt>תאריך</dt><dd>03.12.2026</dd><dt>שעה</dt><dd>20:00</dd></dl><span class="tk-num">כרטיס 1 מתוך 2</span></div></article>
+    <article class="ticket" style="--r:2.5deg"><div class="tk-art" data-art></div><div class="tk-info"><span class="tk-kind">מחזמר</span><b>פריסילה<br>מלכת המדבר</b><dl><dt>תאריך</dt><dd>03.12.2026</dd><dt>שעה</dt><dd>20:00</dd></dl><span class="tk-num">כרטיס 2 מתוך 2</span></div></article>
+  </div>
+  <p class="tk-from">מתנה מהבנים האהובים שלך עומר, אדר ונועם <svg class="tk-heart" viewBox="0 0 24 22" aria-label="לב" role="img"><path d="M12 21 C 4 15, 0 11, 1.5 6 C 3 1.5, 9 1, 12 5.5 C 15 1, 21 1.5, 22.5 6 C 24 11, 20 15, 12 21Z" fill="#E8455A"/></svg></p>
+</dialog>
 <dialog class="list" id="list" aria-labelledby="list-title">
   <h2 id="list-title">כל הברכות</h2>
   <ul id="listitems"></ul>
@@ -1154,7 +1199,7 @@ body.at-intro .stick { display: none; }
       g.position.set(x, groundH(x, z), z); g.rotation.y = rot; scene.add(g); blob(x, z, s * 1.1);
     }
     spots.forEach(function (sp, k) { var p = pathSide(sp[0], sp[1]); gift(p.x, p.z, .45 + R() * .3, PARTY[k % 8], PARTY[(k + 3) % 8], R() * 6); if (k % 2) { gift(p.x + .6, p.z + .3, .3, PARTY[(k + 5) % 8], '#FFFFFF', R() * 6); } });
-    gift(-3.2, -30.5, .8, '#4F7BE8', '#F7D54A', .4); gift(-2.3, -31.2, .5, '#EE7BA0', '#FFFFFF', 1); gift(3.4, -30.6, .65, '#9CC45A', '#E8553A', -.3);
+    gift(-6.6, -30.4, .8, '#4F7BE8', '#F7D54A', .4); gift(-5.9, -31.4, .5, '#EE7BA0', '#FFFFFF', 1); gift(3.4, -30.6, .65, '#9CC45A', '#E8553A', -.3);
   })();
 
   // the birthday cake beside the 50
@@ -1698,6 +1743,39 @@ body.at-intro .stick { display: none; }
     if (reduce) { c.rot = c.target; c.holder.rotation.y = c.rot; }
   }
 
+  /* ================= the big gift from the boys ================= */
+  (function () {
+    var g = new THREE.Group(), s = 2.1, box = new THREE.MeshLambertMaterial({ color: 0xE8455A, flatShading: true }), rib = new THREE.MeshLambertMaterial({ color: 0xFFD447 });
+    var body = new THREE.Mesh(new THREE.BoxGeometry(s, s * .82, s), box); body.position.y = s * .41; g.add(body);
+    var r1 = new THREE.Mesh(new THREE.BoxGeometry(s * 1.02, s * .84, s * .16), rib); r1.position.y = s * .41; g.add(r1);
+    var r2 = r1.clone(); r2.rotation.y = Math.PI / 2; g.add(r2);
+    var lid = new THREE.Group(); lid.position.y = s * .82; g.add(lid);
+    var lidM = new THREE.Mesh(new THREE.BoxGeometry(s * 1.1, s * .18, s * 1.1), box); lidM.position.y = s * .09; lid.add(lidM);
+    var l1 = new THREE.Mesh(new THREE.BoxGeometry(s * 1.12, s * .19, s * .17), rib); l1.position.y = s * .09; lid.add(l1);
+    var l2 = l1.clone(); l2.rotation.y = Math.PI / 2; lid.add(l2);
+    [-1, 1].forEach(function (d) { var bow = new THREE.Mesh(new THREE.TorusGeometry(s * .22, s * .07, 8, 18), rib); bow.position.set(d * s * .2, s * .32, 0); bow.rotation.set(0, Math.PI / 2, d * .6); lid.add(bow); });
+    var knot = new THREE.Mesh(new THREE.SphereGeometry(s * .1, 12, 8), rib); knot.position.y = s * .24; lid.add(knot);
+    var tag = new THREE.Mesh(new THREE.PlaneGeometry(.9, .5), new THREE.MeshBasicMaterial({ color: 0xffffff })); tag.position.set(0, s * .5, s * .51); g.add(tag); deco.giftTag = tag;
+    g.position.set(-4.4, 0, -28); g.rotation.y = .35; scene.add(g); blob(-4.4, -28, 2);
+    deco.gift = { group: g, lid: lid, body: body, opened: false, lidT: 0 };
+    var sp = [], sc = []; for (var k = 0; k < 40; k++) { var a = R() * Math.PI * 2, r = 1.4 + R() * .8; sp.push(-4.4 + Math.cos(a) * r, .4 + R() * 2.8, -28 + Math.sin(a) * r); var c = new THREE.Color(k % 2 ? '#FFD447' : '#FFFFFF'); sc.push(c.r, c.g, c.b); }
+    var sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3)); sg.setAttribute('color', new THREE.Float32BufferAttribute(sc, 3)); sg.userData.base = sp.slice();
+    deco.giftSparks = new THREE.Points(sg, new THREE.PointsMaterial({ size: .22, vertexColors: true, map: canvasTex(radial(64, 'rgba(255,255,255,1)', 'rgba(255,255,255,0)')), transparent: true, depthWrite: false })); scene.add(deco.giftSparks);
+  })();
+  function giftTagTexture() {
+    var c = document.createElement('canvas'); c.width = 360; c.height = 200; var x = c.getContext('2d');
+    x.fillStyle = '#FFFDF4'; x.fillRect(0, 0, 360, 200); x.strokeStyle = '#E8455A'; x.lineWidth = 8; x.strokeRect(8, 8, 344, 184);
+    x.fillStyle = '#B23A26'; x.direction = 'rtl'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = '76px "Gveret Levin", cursive'; x.fillText('לאמא', 180, 104);
+    return canvasTex(c);
+  }
+  function openGift() {
+    var gf = deco.gift; if (!gf) return;
+    var first = !gf.opened; gf.opened = true;
+    chord(5); setTimeout(function () { chord(9); }, 220);
+    if (first && !reduce) { var p = gf.group.position; burst(p.x, 2.2, p.z, PARTY.concat(['#FFD447', '#FFFFFF']), 70, 1.3); firework(p.x, 10, p.z - 4); firework(p.x + 4, 12, p.z - 6); }
+    setTimeout(showTickets, first && !reduce ? 900 : 100);
+  }
+
   /* ================= textures from SVG ================= */
   function svgToCanvas(svg, w, h) {
     return new Promise(function (res) {
@@ -1783,7 +1861,7 @@ body.at-intro .stick { display: none; }
   }
   function loadSigns() {
     var f = document.fonts ? Promise.all([document.fonts.load('80px "Gveret Levin"', 'אבג')]).catch(function () {}) : Promise.resolve();
-    return f.then(function () { plants.forEach(function (o) { o.sign.material.map = canvasTex(signCanvas(o.i)); o.sign.material.needsUpdate = true; }); paintCards(); });
+    return f.then(function () { plants.forEach(function (o) { o.sign.material.map = canvasTex(signCanvas(o.i)); o.sign.material.needsUpdate = true; }); paintCards(); if (deco.giftTag) { deco.giftTag.material.map = giftTagTexture(); deco.giftTag.material.needsUpdate = true; } });
   }
   loadTextures(); loadSigns();
 
@@ -1907,7 +1985,7 @@ body.at-intro .stick { display: none; }
   });
   function endDrag(e) {
     if (!drag) return; canvas.classList.remove('dragging');
-    if (!drag.moved) { var i = pick(e.clientX, e.clientY); if (i === 'fifty') celebrate(); else if (typeof i === 'string' && i.indexOf('card') === 0) flipCard(+i.slice(4)); else if (i !== null) openPlant(i); }
+    if (!drag.moved) { var i = pick(e.clientX, e.clientY); if (i === 'fifty') celebrate(); else if (i === 'gift') openGift(); else if (typeof i === 'string' && i.indexOf('card') === 0) flipCard(+i.slice(4)); else if (i !== null) openPlant(i); }
     drag = null;
   }
   canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', function () { drag = null; canvas.classList.remove('dragging'); });
@@ -1915,12 +1993,13 @@ body.at-intro .stick { display: none; }
 
   function pick(cx, cy) {
     ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); raycaster.setFromCamera(ndc, camera);
-    var objs = plants.map(function (o) { return o.mesh; }).concat(plants.map(function (o) { return o.sign; }), [fifty], deco.cake ? deco.cake.children : [], [].concat.apply([], deco.cards.map(function (c) { return c.holder.children; })));
+    var objs = plants.map(function (o) { return o.mesh; }).concat(plants.map(function (o) { return o.sign; }), [fifty], deco.cake ? deco.cake.children : [], [].concat.apply([], deco.cards.map(function (c) { return c.holder.children; })), deco.gift ? [deco.gift.body, deco.giftTag].concat(deco.gift.lid.children, deco.gift.group.children) : []);
     var hits = raycaster.intersectObjects(objs, false);
     for (var k = 0; k < hits.length; k++) {
       var h = hits[k]; if (h.distance > 26) break;
       if (h.object === fifty || (deco.cake && h.object.parent === deco.cake)) return 'fifty';
       if (h.object.userData.card != null) return 'card' + h.object.userData.card;
+      if (deco.gift && (h.object.parent === deco.gift.group || h.object.parent === deco.gift.lid)) return 'gift';
       var i = h.object.userData.i, o = plants[i];
       if (h.object === o.sign) return i;
       var c = o.open ? o.cv.open : o.cv.bud; if (!c || !h.uv) return i;
@@ -2105,6 +2184,28 @@ body.at-intro .stick { display: none; }
 
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
   document.addEventListener('dblclick', function (e) { if (e.target === canvas) e.preventDefault(); });
+  var giftBtn = document.getElementById('giftbtn'), tickets = document.getElementById('tickets');
+  giftBtn.addEventListener('click', openGift);
+  var TICKET_ART = '<svg viewBox="0 0 200 220" preserveAspectRatio="xMidYMid slice" aria-label="איור: האוטובוס הוורוד של פריסילה עם עקב כסוף על הגג, במדבר בשקיעה" role="img">' +
+    '<defs><linearGradient id="tks" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A1A6A"/><stop offset=".55" stop-color="#E8457A"/><stop offset="1" stop-color="#FFB347"/></linearGradient></defs>' +
+    '<rect width="200" height="220" fill="url(#tks)"/><circle cx="100" cy="128" r="46" fill="#FFD447"/>' +
+    '<path d="M0 150 Q 50 132 100 146 T 200 140 V220 H0Z" fill="#D9853B"/><path d="M0 170 Q 60 156 120 168 T 200 164 V220 H0Z" fill="#C2662B"/>' +
+    '<g fill="#2E7D4F"><rect x="22" y="128" width="7" height="30" rx="3.5"/><rect x="14" y="136" width="6" height="14" rx="3"/><rect x="31" y="132" width="6" height="12" rx="3"/><rect x="170" y="132" width="6" height="26" rx="3"/><rect x="176" y="138" width="5" height="10" rx="2.5"/></g>' +
+    '<g transform="translate(36 150)"><rect x="0" y="0" width="128" height="40" rx="7" fill="#FF6FA8"/><rect x="0" y="27" width="128" height="7" fill="#FFFFFF" opacity=".85"/>' +
+    '<g fill="#BFE8F7">' + [8, 30, 52, 74, 96].map(function (x) { return '<rect x="' + x + '" y="7" width="17" height="13" rx="2"/>'; }).join('') + '</g><rect x="114" y="7" width="10" height="20" rx="2" fill="#BFE8F7"/>' +
+    '<circle cx="26" cy="42" r="8" fill="#2A1446"/><circle cx="26" cy="42" r="3" fill="#ccc"/><circle cx="102" cy="42" r="8" fill="#2A1446"/><circle cx="102" cy="42" r="3" fill="#ccc"/></g>' +
+    '<g transform="translate(64 116)"><path d="M0 34 L 44 34 C 60 34, 70 26, 76 12 L 80 2 C 82 -2, 76 -3, 74 1 L 66 16 C 60 26, 50 28, 40 26 L 8 22 C 2 22, 0 28, 0 34Z" fill="#E7EAF0"/><path d="M8 22 L 40 26 C 50 28, 60 26, 66 16" stroke="#9AA3B2" stroke-width="2" fill="none"/><rect x="2" y="34" width="5" height="3" fill="#9AA3B2"/><path d="M60 30 L 64 36 L 70 36" stroke="#B9C0CC" stroke-width="3" fill="none"/></g>' +
+    '<g transform="translate(150 40)"><line x1="0" y1="-40" x2="0" y2="-14" stroke="#ddd" stroke-width="1.5"/><circle r="15" fill="#C9CED6"/>' + [[-6,-6],[2,-9],[8,-2],[-9,2],[0,0],[6,6],[-3,8],[9,-8]].map(function (p) { return '<rect x="' + (p[0] - 2.5) + '" y="' + (p[1] - 2.5) + '" width="5" height="5" fill="#FFFFFF" opacity=".8"/>'; }).join('') + '</g>' +
+    [[30, 30], [60, 18], [118, 22], [178, 70], [20, 80], [86, 54]].map(function (p, k) { return '<path transform="translate(' + p[0] + ' ' + p[1] + ')" d="M0 -6 L 1.6 -1.6 L 6 0 L 1.6 1.6 L 0 6 L -1.6 1.6 L -6 0 L -1.6 -1.6Z" fill="' + (k % 2 ? '#FFD447' : '#FFFFFF') + '"/>'; }).join('') + '</svg>';
+  tickets.querySelectorAll('[data-art]').forEach(function (el) { el.innerHTML = TICKET_ART; });
+  function showTickets() {
+    if (tickets.open) return;
+    tickets.showModal(); requestAnimationFrame(function () { requestAnimationFrame(function () { tickets.classList.add('is-in'); }); });
+  }
+  function closeTickets() { tickets.classList.remove('is-in'); setTimeout(function () { tickets.close(); }, 260); }
+  document.getElementById('tk-close').addEventListener('click', closeTickets);
+  tickets.addEventListener('cancel', function (e) { e.preventDefault(); closeTickets(); });
+  tickets.addEventListener('click', function (e) { if (e.target === tickets) closeTickets(); });
   /* ================= hint & intro ================= */
   var hint = document.getElementById('hint'), hintT = null;
   if (matchMedia('(pointer: coarse)').matches) hint.textContent = 'גררי כדי להסתכל, הזיזי את העיגול כדי ללכת, וגעי בצמח';
@@ -2183,6 +2284,16 @@ body.at-intro .stick { display: none; }
         dp.needsUpdate = true; deco.dust.material.size = .16 + Math.sin(now * .004) * .04;
       }
       deco.cards.forEach(function (c) { if (Math.abs(c.target - c.rot) > .001) { c.rot += (c.target - c.rot) * Math.min(1, dt * 6); c.holder.rotation.y = c.rot; c.holder.position.y = c.holder.position.y; c.holder.rotation.z = Math.sin(c.rot) * .12; } });
+      if (deco.gift) {
+        var gf = deco.gift;
+        if (!reduce) gf.group.position.y = gf.opened ? 0 : Math.abs(Math.sin(now * .003)) * .12;
+        if (gf.opened && gf.lidT < 1) { gf.lidT = Math.min(1, gf.lidT + dt * 1.6); var lt = gf.lidT; gf.lid.position.set(-lt * 1.6, 2.1 * .82 + Math.sin(lt * Math.PI) * 2.4 + lt * .2, lt * .4); gf.lid.rotation.z = lt * 1.1; if (reduce) gf.lidT = 1; }
+        var gsp = deco.giftSparks.geometry.attributes.position, gb = deco.giftSparks.geometry.userData.base;
+        for (var gi = 0; gi < gsp.count; gi++) gsp.setY(gi, gb[gi * 3 + 1] + ((now * .0006 + gi * .37) % 1) * 1.2);
+        gsp.needsUpdate = true; deco.giftSparks.material.size = .16 + Math.abs(Math.sin(now * .005)) * .12;
+        var dg = Math.hypot(cam.x - gf.group.position.x, cam.z - gf.group.position.z);
+        giftBtn.classList.toggle('show', mode === 'walk' && dg < 11);
+      }
       if (deco.wheel) deco.wheel.rotation.y += dt * 4;
       if (deco.kilnFire) { var kf = 1 + Math.sin(now * .013) * .08 + Math.sin(now * .031) * .05; deco.kilnFire.scale.set(1.3 * kf, .9 * kf, 1); }
       clouds.forEach(function (c) { c.position.x += c.userData.v * dt; if (c.position.x > 260) c.position.x = -260; });
@@ -2215,7 +2326,7 @@ body.at-intro .stick { display: none; }
     requestAnimationFrame(frame);
   }
   applyCam(); requestAnimationFrame(frame);
-  window.__garden3d = { cam: cam, setTime: setTime, standAt: standAt, plants: plants, openPlant: openPlant, path: path, deco: deco, flipCard: flipCard };
+  window.__garden3d = { openGift: function () { openGift(); }, cam: cam, setTime: setTime, standAt: standAt, plants: plants, openPlant: openPlant, path: path, deco: deco, flipCard: flipCard };
 })();
 </script>
 </body>
